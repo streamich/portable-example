@@ -1,4 +1,4 @@
-# `portable.js` Intro Tut
+# `portable.js` Introduction
 
 First install `portable.js` globally using `npm`.
 
