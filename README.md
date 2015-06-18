@@ -6,17 +6,17 @@ First install `portable.js` globally using `npm`.
     
 This will install a command line tool `portable.js` (or `pjs` for convenience) you will use to package your apps.
 
-To begin, in your project's folder you will have to create a `portable.js` manifest file that describes how bundle your files.
+To begin, in your project's folder you will have to create a `portable.js` manifest file that describes how to bundle your files.
  
-Let's say you have a typical project `my-app`, with a typical node.js folder structure:
+Let's say you have a project `my-app`, with a typical node.js folder structure:
 
-    /my-app
-        /app
-            /standard
+    my-app/
+        app/
+            standard/
                 index.js
-            /feature
-                index.js
-        /node_modules
+            feature/
+                print-time.js
+        node_modules/
             ...
         package.json
         portable.js
@@ -24,7 +24,7 @@ Let's say you have a typical project `my-app`, with a typical node.js folder str
 In `portable.js` manifest you have to define 3 variables: `dest`, `layer`, and `bundle`.
 
  - `dest` is simply the destination folder where the output will be saved.
- - `layer` this defines the 'layers' or files that you want to package together.
+ - `layer` defines the 'layers' or files that you want to package together.
  - `bundle` specifies the final output target, be it a browser app or a node.js app.
  
 Let's start by creating a layer with the core functionality of our app. Edit your `portable.js` file to as follows:
@@ -42,7 +42,8 @@ module.exports = {
         standard: {
             // The root folder where to start to look for files.
             src: './',
-            // An array or a string of globs to match files, which will be included in the layer.
+            // An array or a string of globs to match files,
+            // which will be included in the layer.
             glob: [
                 'app/standard/**/*.js',
                 'node_modules/**/*.+(js|json)',
@@ -57,7 +58,7 @@ In your project's folder run this command to create your layers.
     portable.js layer
     
 In `./dist` folder you will see a `.json` file containing the files you included in your layer. Now lets use that layer
-to create a web app, add to your `portable.js` bundle definition:
+to create a web app, add to your `portable.js` a bundle definition:
 
 ```javascript
 module.exports = {
@@ -92,12 +93,12 @@ module.exports = {
 };
 ```
 
-Now run `portable.js bundle` and you are *done*. Your freshly baked app is now available at `./dist/app.js`. All you
-need to do is include it in your HTML page `<script src="./dist/app.js"></script>`.
+Now run `portable.js bundle` command and you are *done*. Your freshly baked app is now available at [`./dist/app.js`](./dist/app.js).
+All you need to do is include it in your HTML page with `<script src="./dist/app.js"></script>`.
 
 To make your workflow more efficient, you can use the `server` command which will watch your folders and rebuild the
 bundles automatically as you modify your files and instead of rewriting the bundle files in the `./dist` folder your
-bundles will be server by a HTTP server. Specify a port you want to use for the server in the manifest file:
+bundles will be served by a HTTP server. Specify a port you want to use for the server in the manifest file:
 
 ```javascript
 module.exports = {
@@ -140,8 +141,12 @@ Now in your HTML file specify the URL of the bundle as `<script src="https://127
 *portable.js* creates an in-memory file system out of your layers. For example, you can print the location of your
 current file, just as you do in node.js:
 
-    console.log(__dirname);
-    // /my-app/app/standard"
+```javascript
+console.log(__dirname);
+// /my-app/app/standard
+console.log(__filename);
+// /my-app/app/standard/index.js
+```
 
 The `fs` module has two functions `fs.mountSync` and `fs.mount` that allow you to mount more files to your in-memory
 file system.
